@@ -142,3 +142,62 @@ int queue_get_last(my_queue *queue, char **buf) {
 
   return 0;
 }
+
+int queue_get(my_queue *queue, int index, node **data) {
+  if((index >= queue_getsize(queue)) || (index < 0)) {
+    return -1;
+  }
+
+  node *current_node = queue->head;
+  int i = 0;
+
+  while(i != index) {
+    current_node = current_node->next;
+    i++;
+  }
+
+  *data = current_node;
+
+  return 0;
+}
+
+int queue_remove(my_queue *queue, int index) {
+  if(index >= queue_getsize(queue)) {
+    return -1;
+  }
+
+  if(index == 0) {
+    node *to_delete = queue->head;
+    queue->head = queue->head->next;
+    free(to_delete->data);
+    free(to_delete);
+
+    if(queue_getsize(queue) == 1) {
+      queue->tail = queue->head = NULL;
+    }
+    
+    (queue->size)--;
+
+    return 0;
+  }
+
+  node *current_node = queue->head;
+  int i = 0;
+
+  while(i != index - 1) {
+    current_node = current_node->next;
+    i++;
+  }
+
+  if(i == (queue_getsize(queue) - 2)) {
+    queue->tail = current_node;
+  }
+
+  node *to_delete = current_node->next;
+  current_node->next = to_delete->next;
+  free(to_delete->data);
+  free(to_delete);
+  (queue->size)--;
+
+  return 0;
+}

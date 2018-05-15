@@ -1,4 +1,5 @@
 #include "functions.h"
+#include "node.h"
 
 #define BUFFER_SIZE 16
 #define OP_BUFFER_SIZE 2
@@ -851,6 +852,13 @@ int sum(char **first_operand, char **second_operand) {
 	if(((*first_operand)[0] == '-') && ((*second_operand)[0] == '-')) {
 		reverse_pos = 1;
 		result[0] = '-';
+
+		if(unary_minus(first_operand) || unary_minus(second_operand)) {
+			return -1;
+		}
+
+		first_size = strlen(*first_operand);
+		second_size = strlen(*second_operand);
 	} 
 	else if((*first_operand)[0] == '-') {
 		if(unary_minus(first_operand)) {
@@ -867,7 +875,7 @@ int sum(char **first_operand, char **second_operand) {
 		return sub(first_operand, second_operand);
 	}
 
-	if(reverse(&(*first_operand)[reverse_pos]) || reverse(&(*second_operand)[reverse_pos])) {
+	if(reverse(*first_operand) || reverse(*second_operand)) {
 		return -1;
 	}
 
@@ -933,16 +941,14 @@ int sum(char **first_operand, char **second_operand) {
 	else{
 		result[last + 1] = '\0';
 	}
-
 	
 	free(*first_operand);
-	free(*second_operand);
 
 	if(reverse(&result[reverse_pos])) {
 		return -1;
 	}
 
-	*first_operand = *second_operand = result;
+	*first_operand  = result;
 
 	return 0;
 }
@@ -1011,7 +1017,7 @@ int sub(char **first_operand, char **second_operand) {
 
 
 }
-
+/*
 int calculate(char **pole_note, int arr_size) {
 	for(int i = 0; i < arr_size; i++) {
 		switch(pole_note[i][0]) {
@@ -1046,6 +1052,83 @@ printf("here: %s\n", pole_note[i-1]);
 				pole_note[i] = pole_note[i-1];
 				break;
 		}
+	}
+
+	return 0;
+}
+*/
+
+int calculate(my_queue *pole_note) {
+	int index = 0;
+
+	while(queue_getsize(pole_note) != 1) {
+		node *current_node = NULL;
+printf("index:%d size:%d\n", index, queue_getsize(pole_note));
+		if(queue_get(pole_note, index, &current_node)) {
+			printf("[error]");
+
+			return -1;
+		}
+printf("data:%s\n", current_node->data);
+		node *first_operand = NULL;
+		node *second_operand = NULL;
+
+		switch((current_node->data)[0]) {
+			case '~':
+
+				if(queue_get(pole_note, index-1, &first_operand)) {
+					printf("[error]");
+
+					return -1;
+				}
+
+				if(unary_minus(&(first_operand->data))) {
+					printf("[error]");
+
+					return -1;
+				}
+
+				queue_remove(pole_note, index--);
+
+				break;
+			case '+':
+
+				if(queue_get(pole_note, index-2, &first_operand) || queue_get(pole_note, index-1, &second_operand)) {
+					printf("[error]");
+
+					return -1;
+				}
+
+				if(sum(&(first_operand->data), &(second_operand->data))){
+					printf("[error]");
+
+					return -1;
+				}
+
+				queue_remove(pole_note, index--);
+				queue_remove(pole_note, index--);
+
+				break;
+			case '-':
+
+				if(queue_get(pole_note, index-2, &first_operand) || queue_get(pole_note, index-1, &second_operand)) {
+					printf("[error]");
+
+					return -1;
+				}
+
+				if(sub(&(first_operand->data), &(second_operand->data))){
+					printf("[error]");
+
+					return -1;
+				}
+
+				queue_remove(pole_note, index--);
+				queue_remove(pole_note, index--);
+
+				break;
+		}
+		index++;
 	}
 
 	return 0;

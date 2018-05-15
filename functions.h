@@ -16,7 +16,7 @@ int queue_to_array(my_queue *queue, char ***array, int *arr_size);
 int reverse(char *string);
 int convert_to_digit(char symb);
 char convert_to_char(int digit);
-int calculate(char **pole_note, int arr_size);
+int calculate(my_queue *pole_note);
 int unary_minus(char **first_operand);
 int sum(char **first_operand, char **second_operand);
 int sub(char **first_operand, char **second_operand);

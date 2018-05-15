@@ -27,17 +27,19 @@ int main() {
 		free(buf);
 	}
 	*/
-	char **pole_arr = NULL;
-	int arr_size = 0;
-	queue_to_array(&pole_note, &pole_arr, &arr_size);
+	
+	/*queue_to_array(&pole_note, &pole_arr, &arr_size);
 
 	for(int i = 0; i < arr_size; i++) {
 		printf("%s\n", pole_arr[i]);
 	}
+	*/
 
-	calculate(pole_arr, arr_size);
-	printf("%s\n", pole_arr[arr_size - 1]);
-
+	calculate(&pole_note);
+	char *buff = NULL;
+	queue_get_last(&pole_note, &buff);
+	printf("%s\n", buff);
+	free(buff);
 	queue_clear(&queue);
 	queue_clear(&pole_note);
 
