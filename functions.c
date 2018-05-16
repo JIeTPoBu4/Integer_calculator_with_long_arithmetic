@@ -1024,7 +1024,7 @@ int add_sub(char *first_operand, char *second_operand) {
 	for(int i = strlen(second_operand) - 1; i >= 0; i--) {
 		int first = convert_to_digit(first_operand[i]);
 		int second = convert_to_digit(second_operand[i]);
-printf("first:%d %s second:%d %s\n", first, first_operand, second, second_operand);
+
 		if(first >= second) {
 			first -= second;
 		}
@@ -1039,7 +1039,7 @@ printf("first:%d %s second:%d %s\n", first, first_operand, second, second_operan
 			else {
 				for(int j = i + 1; j < strlen(first_operand); j++) {
 					int digit = convert_to_digit(first_operand[j]);
-printf("j:%d digit:%d\n", j, digit);
+
 					if(digit == 0) {
 						first_operand[j] = '9';
 
@@ -1056,7 +1056,7 @@ printf("j:%d digit:%d\n", j, digit);
 
 		first_operand[i] = convert_to_char(first);
 	}
-printf("first_op:%s\n", first_operand);
+
 	return 0;
 }
 
@@ -1150,7 +1150,7 @@ int sub(char **first_operand, char **second_operand) {
 			if(unary_minus(first_operand)) {
 				return -1;
 			}
-printf("here:%s\n", *first_operand);
+
 			break;
 
 	}
@@ -1205,13 +1205,13 @@ int calculate(my_queue *pole_note) {
 
 	while(queue_getsize(pole_note) != 1) {
 		node *current_node = NULL;
-printf("index:%d size:%d\n", index, queue_getsize(pole_note));
+
 		if(queue_get(pole_note, index, &current_node)) {
 			printf("[error]");
 
 			return -1;
 		}
-printf("data:%s\n", current_node->data);
+
 		node *first_operand = NULL;
 		node *second_operand = NULL;
 

@@ -14,7 +14,6 @@ int main() {
 	queue_init(&queue);
 	queue_init(&pole_note);
 	new_pars(buf, &queue);
-	printf("%d\n", queue_getsize(&queue));
 	pole_notation(&queue, &pole_note);
 	/*
 	printf("%d\n", queue_getsize(&pole_note));
@@ -36,8 +35,6 @@ int main() {
 	*/
 
 	calculate(&pole_note);
-printf("IN MAIN\n");
-printf("pole_note size:%d\n", queue_getsize(&pole_note));
 	char *buff = NULL;
 	queue_get_last(&pole_note, &buff);
 	printf("%s\n", buff);
