@@ -20,6 +20,9 @@ int calculate(my_queue *pole_note);
 int unary_minus(char **first_operand);
 int sum(char **first_operand, char **second_operand);
 int sub(char **first_operand, char **second_operand);
+int add_sub(char *first_operand, char *second_operand);
+int compare(char *first_operand, char *second_operand);
+int delete_zeros(char **number);
 
 
 #endif

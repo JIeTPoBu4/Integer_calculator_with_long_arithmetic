@@ -36,6 +36,8 @@ int main() {
 	*/
 
 	calculate(&pole_note);
+printf("IN MAIN\n");
+printf("pole_note size:%d\n", queue_getsize(&pole_note));
 	char *buff = NULL;
 	queue_get_last(&pole_note, &buff);
 	printf("%s\n", buff);

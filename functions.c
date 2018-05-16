@@ -741,6 +741,61 @@ int reverse(char *string) {
 	return 0;
 }
 
+int compare(char *first_operand, char *second_operand) {
+	if(strlen(first_operand) > strlen(second_operand)) {
+		return 1;
+	}
+
+	if(strlen(first_operand) < strlen(second_operand)) {
+		return -1;
+	}
+
+	for(int i = 0; first_operand[i]; i++) {
+		if(first_operand[i] > second_operand[i]) {
+			return 1;
+		}
+
+		if(first_operand[i] < second_operand[i]) {
+			return -1;
+		}
+	}
+
+	return 0;
+}
+
+int delete_zeros(char **number) {
+	if(strlen(*number) == 1) {
+		return 0;
+	}
+
+	if(reverse(*number)) {
+		return -1;
+	}
+
+	int index = strlen(*number);
+
+	while((*number)[index - 1] == '0') {
+		index--;
+	}
+
+	(*number)[index] = '\0';
+	char *new_number = NULL;
+
+	if(!(new_number = (char *)malloc(sizeof(char) * (index + 1)))) {
+		return -1;
+	}
+
+	snprintf(new_number, index + 1, "%s", *number);
+	free(*number);
+	*number = new_number;
+
+	if(reverse(*number)) {
+		return -1;
+	}
+
+	return 0;
+}
+
 int convert_to_digit(char symb) {
 	switch(symb) {
 		case '0':
@@ -798,6 +853,10 @@ char convert_to_char(int digit) {
 int unary_minus(char **first_operand) {
 	if(!(*first_operand)) {
 		return -1;
+	}
+
+	if((strlen(*first_operand) == 1) && (*first_operand)[0] == '0') {
+		return 0;
 	}
 
 	if((*first_operand)[0] == '-') {
@@ -865,7 +924,11 @@ int sum(char **first_operand, char **second_operand) {
 			return -1;
 		}
 
-		return sub(second_operand, first_operand);
+		if(sub(first_operand, second_operand)) {
+			return -1;
+		}
+
+		return unary_minus(first_operand);
 	}
 	else if((*second_operand)[0] == '-') {
 		if(unary_minus(second_operand)) {
@@ -953,43 +1016,69 @@ int sum(char **first_operand, char **second_operand) {
 	return 0;
 }
 
+int add_sub(char *first_operand, char *second_operand) {
+	if(!first_operand || !second_operand) {
+		return -1;
+	}
+
+	for(int i = strlen(second_operand) - 1; i >= 0; i--) {
+		int first = convert_to_digit(first_operand[i]);
+		int second = convert_to_digit(second_operand[i]);
+printf("first:%d %s second:%d %s\n", first, first_operand, second, second_operand);
+		if(first >= second) {
+			first -= second;
+		}
+		else {
+			first += 10;
+
+			if(first_operand[i+1] != '0') {
+				int digit = convert_to_digit(first_operand[i+1]);
+				digit--;
+				first_operand[i+1] = convert_to_char(digit);
+			}
+			else {
+				for(int j = i + 1; j < strlen(first_operand); j++) {
+					int digit = convert_to_digit(first_operand[j]);
+printf("j:%d digit:%d\n", j, digit);
+					if(digit == 0) {
+						first_operand[j] = '9';
+
+						continue;
+					}
+
+					digit--;
+					first_operand[j] = convert_to_char(digit);
+				}
+			}
+
+			first -= second;
+		}
+
+		first_operand[i] = convert_to_char(first);
+	}
+printf("first_op:%s\n", first_operand);
+	return 0;
+}
+
 int sub(char **first_operand, char **second_operand) {
 	if(!(*first_operand) || !(*second_operand)) {
 		return -1;
 	}
 
-	char *result = NULL;
 	int first_size = strlen(*first_operand);
 	int second_size = strlen(*second_operand);
 	int result_size = 0;
 
 	if(((*first_operand)[0] == '-') && ((*second_operand)[0] == '-')) {
-		/*
-		char *new_first = NULL;
-		char *new_second = NULL;
 
-		if(!(new_first = (char*)malloc(sizeof(char) * (strlen(&(*first_operand)[1]) + 1)))) {
+		if(unary_minus(second_operand)) {
 			return -1;
 		}
 
-		if(!(new_second = (char*)malloc(sizeof(char) * (strlen(&(*second_operand)[1]) + 1)))) {
-			return -1;
-		}
-
-		snprintf(new_first, strlen(&(*first_operand)[1]) + 1, "%s", &(*first_operand)[1]);
-		snprintf(new_second, strlen(&(*second_operand)[1]) + 1, "%s", &(*second_operand)[1]);
-		free((*second_operand));
-		free((*first_operand));
-		*first_operand = new_first;
-		*second_operand = new_second;
-		*/
-		if(unary_minus(first_operand) || unary_minus(second_operand)) {
-			return -1;
-		}
-
-		return sub(second_operand, first_operand);
+		return sum(first_operand, second_operand);
 	} 
 	else if((*first_operand)[0] == '-') {
+
 		if(unary_minus(second_operand)) {
 			return -1;
 		}
@@ -997,17 +1086,7 @@ int sub(char **first_operand, char **second_operand) {
 		return sum(first_operand, second_operand);
 	}
 	else if((*second_operand)[0] == '-') {
-		/*
-		char *new_second = NULL;
 
-		if(!(new_second = (char*)malloc(sizeof(char) * (strlen(&(*second_operand)[1]) + 1)))) {
-			return -1;
-		}
-
-		snprintf(new_second, strlen(&(*second_operand)[1]) + 1, "%s", &(*second_operand)[1]);
-		free((*second_operand));
-		*second_operand = new_second;
-		*/
 		if(unary_minus(second_operand)) {
 			return -1;
 		}
@@ -1015,8 +1094,71 @@ int sub(char **first_operand, char **second_operand) {
 		return sum(first_operand, second_operand);
 	}
 
+	char *result = NULL;
+
+	switch(compare(*first_operand, *second_operand)) {
+		case 0:
+
+			if(!(result = (char *)malloc(sizeof(char) * 2))) {
+				return -1;
+			} 
+
+			snprintf(result, 2, "0");
+			free(*first_operand);
+			*first_operand = result;
+
+			break;
+		case 1:
+			if(reverse(*first_operand) || reverse(*second_operand)) {
+				return -1;
+			}
+
+			if(add_sub((*first_operand), (*second_operand))) {
+				return -1;
+			}
+
+			if(reverse(*first_operand)) {
+				return -1;
+			}
+
+			if(delete_zeros(first_operand)) {
+				return -1;
+			}
+
+			break;
+		case -1:
+			if(reverse(*first_operand) || reverse(*second_operand)) {
+				return -1;
+			}
+
+			if(add_sub((*second_operand), (*first_operand))) {
+				return -1;
+			}
+
+			free(*first_operand);
+			*first_operand = *second_operand;
+			*second_operand = NULL;
+
+			if(reverse(*first_operand)) {
+				return -1;
+			}
+
+			if(delete_zeros(first_operand)) {
+				return -1;
+			}
+
+			if(unary_minus(first_operand)) {
+				return -1;
+			}
+printf("here:%s\n", *first_operand);
+			break;
+
+	}
+
+	return 0;
 
 }
+
 /*
 int calculate(char **pole_note, int arr_size) {
 	for(int i = 0; i < arr_size; i++) {
