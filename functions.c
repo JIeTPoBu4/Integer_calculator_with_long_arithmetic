@@ -928,12 +928,16 @@ int sum(char **first_operand, char **second_operand) {
 			return -1;
 		}
 
+		free(result);
+
 		return unary_minus(first_operand);
 	}
 	else if((*second_operand)[0] == '-') {
 		if(unary_minus(second_operand)) {
 			return -1;
 		}
+
+		free(result);
 
 		return sub(first_operand, second_operand);
 	}
