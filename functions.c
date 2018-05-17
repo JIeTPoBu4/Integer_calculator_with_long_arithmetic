@@ -774,7 +774,7 @@ int delete_zeros(char **number) {
 
 	int index = strlen(*number);
 
-	while((*number)[index - 1] == '0') {
+	while((*number)[index - 1] == '0' && (index != 1)) {
 		index--;
 	}
 
@@ -1333,6 +1333,12 @@ int mul(char **first_operand, char **second_operand) {
 		}
 	}
 
+	if(delete_zeros(&(first_op->data))) {
+		queue_clear(&list);
+
+		return -1;
+	}
+
 	if(minus_flag) {
 		if(unary_minus(&(first_op->data))) {
 			queue_clear(&list);
@@ -1351,10 +1357,6 @@ int mul(char **first_operand, char **second_operand) {
 
 	snprintf(*first_operand, strlen(first_op->data) + 1, "%s", first_op->data);
 	queue_clear(&list);
-
-	if(delete_zeros(first_operand)) {
-		return -1;
-	}
 
 	return 0;
 }
