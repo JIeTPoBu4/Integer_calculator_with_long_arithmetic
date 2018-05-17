@@ -1204,6 +1204,161 @@ printf("here: %s\n", pole_note[i-1]);
 }
 */
 
+int mul(char **first_operand, char **second_operand) {
+	if(!(*first_operand) || !(*second_operand)) {
+		return -1;
+	}
+
+	int minus_flag = 0;
+
+	if(((*first_operand)[0] == '-') && (*second_operand)[0] == '-') {
+		if(unary_minus(first_operand) || unary_minus(second_operand)) {
+			return -1;
+		}
+	}
+	else if((*first_operand)[0] == '-') {
+		minus_flag = 1;
+
+		if(unary_minus(first_operand)) {
+			return -1;
+		}
+	}
+	else if((*second_operand)[0] == '-') {
+		minus_flag = 1;
+
+		if(unary_minus(second_operand)) {
+			return -1;
+		}
+	}
+
+	if(reverse(*first_operand) || reverse(*second_operand)) {
+		return -1;
+	}
+
+	int result_size = 0;
+
+	switch(compare(*first_operand, (*second_operand))) {
+		case 0:
+			result_size = strlen(*first_operand) + 1;
+			break;
+		case 1:
+			result_size = strlen(*first_operand) + 1;
+			break;
+		case -1:
+			result_size = strlen(*second_operand) + 1;
+			break;
+	}
+
+	int add = 0;
+	char *result = NULL;
+	my_queue list;
+	queue_init(&list);
+
+	for(int i = 0; i < strlen(*second_operand); i++) {
+		int second = convert_to_digit((*second_operand)[i]);
+
+		if(!(result = (char *)malloc(sizeof(char) * (result_size + i + 1)))) {
+			queue_clear(&list);
+
+			return -1;
+		}
+
+		for(int k = 0; k < i; k++) {
+			result[k] = '0';
+		}
+
+		for(int j = 0; j < strlen(*first_operand); j++) {
+			int first = convert_to_digit((*first_operand)[j]);
+			int res = add;
+
+			res += (first * second);
+			add = res / 10;
+			res %= 10;
+			result[j + i] = convert_to_char(res);
+		}
+
+		if(add) {
+			result[strlen(*first_operand) + i] = convert_to_char(add);
+			result[strlen(*first_operand) + i + 1] = '\0';
+		}
+		else {
+			result[strlen(*first_operand) + i] = '\0';
+		}
+
+		add = 0;
+		if(reverse(result)) {
+			queue_clear(&list);
+
+			return -1;
+		}
+
+		if(queue_push(&list, result)) {
+			queue_clear(&list);
+
+			return -1;
+		}
+
+		free(result);
+	}
+
+	node *first_op = NULL;
+	node *second_op = NULL;
+
+	if(queue_getsize(&list) == 1) {
+
+		if(queue_get(&list, 0, &first_op)) {
+			queue_clear(&list);
+
+			return -1;
+		}
+	}
+	else {
+
+		while(queue_getsize(&list) != 1) {
+
+
+			if(queue_get(&list, 0, &first_op) || queue_get(&list, 1, &second_op)) {
+				queue_clear(&list);
+
+				return -1;
+			}
+
+			if(sum(&(first_op->data), &(second_op->data))){
+				queue_clear(&list);
+
+				return -1;
+			}
+
+			queue_remove(&list, 1);
+		}
+	}
+
+	if(minus_flag) {
+		if(unary_minus(&(first_op->data))) {
+			queue_clear(&list);
+
+			return -1;
+		}
+	}
+
+	free(*first_operand);
+
+	if(!(*first_operand = (char *)malloc(sizeof(char) * (strlen(first_op->data) + 1)))) {
+		queue_clear(&list);
+
+		return -1;
+	}
+
+	snprintf(*first_operand, strlen(first_op->data) + 1, "%s", first_op->data);
+	queue_clear(&list);
+
+	if(delete_zeros(first_operand)) {
+		return -1;
+	}
+
+	return 0;
+}
+
 int calculate(my_queue *pole_note) {
 	int index = 0;
 
@@ -1264,6 +1419,23 @@ int calculate(my_queue *pole_note) {
 				}
 
 				if(sub(&(first_operand->data), &(second_operand->data))){
+					printf("[error]");
+
+					return -1;
+				}
+
+				queue_remove(pole_note, index--);
+				queue_remove(pole_note, index--);
+
+				break;
+			case '*':
+				if(queue_get(pole_note, index-2, &first_operand) || queue_get(pole_note, index-1, &second_operand)) {
+					printf("[error]");
+
+					return -1;
+				}
+
+				if(mul(&(first_operand->data), &(second_operand->data))){
 					printf("[error]");
 
 					return -1;

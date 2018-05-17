@@ -23,6 +23,7 @@ int sub(char **first_operand, char **second_operand);
 int add_sub(char *first_operand, char *second_operand);
 int compare(char *first_operand, char *second_operand);
 int delete_zeros(char **number);
+int mul(char **first_operand, char **second_operand);
 
 
 #endif
