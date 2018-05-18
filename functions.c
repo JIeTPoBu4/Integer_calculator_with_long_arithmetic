@@ -26,154 +26,8 @@ int is_scope(char symb) {
 int is_space(char symb) {
 	return (symb == ' ');
 }
-/*
-int is_symbol(char symb) {
-	char symbols[] = { "()+-/*=" };
-
-	for(int i = 0; symbols[i]; i++) {
-		if(symbols[i] == symb)
-			return 1;
-	}
-
-	return 0;
-}
-
-int cat_str(char *to, char *from) {
-	size_t size = BUFFER_SIZE;
-
-	while((strlen(to) + strlen(from)) >= size) {
-		size *= 2;
-	}
-
-	char *buffer = NULL;
-
-	if(!(buffer = (char*)malloc(sizeof(char) * size))) {
-		printf("[error]");
-
-		return -1;
-	}
-
-	snprintf(buffer, size, "%s%s", to, from);
-	free(to);
-	to = buffer;
-
-	return 0;
-}
-
-int symbols_pars(const char *str, int index, char *buf, my_queue *queue, int *flag) {
-	char *symb[] = { "(", ")", "+", "-", "/", "*", "=", "" };
-
-	for (int i = 0; i < sizeof(symb)/sizeof(char*) ; i++) {
-
-			if (str[index] == symb[i][0]) {
-
-				if (*flag) {
-					queue->push(buf);
-					*flag = 0;
-				}
-
-				if (index) {
-					if ((str[index] == '-') && (str[index - 1] == '(')) {
-
-						if(!(buf = (char*)malloc(sizeof(char) * BUFFER_SIZE))) {
-							printf("[error]");
-
-							return -1;
-						}
-
-						*flag = 1;
-						snprintf(buf, BUFFER_SIZE, "%s", symb[i]);
-
-						return 0;
-					}
-				}
-
-				if ((str[index] == '-') && (index == 0)) {
-
-					if(!(buf = (char*)malloc(sizeof(char) * BUFFER_SIZE))) {
-						printf("[error]");
-
-						return -1;
-					}
-
-					*flag = 1;
-					snprintf(buf, BUFFER_SIZE, "%s", symb[i]);
-
-					return 0;
-				}
-				else {
-					queue.push(symb[i]);
-				}
-			}
-			else
-			{
-				continue;
-			}
-	}
-
-	return 0;
-}
-
-int number_pars(const char *str, int index, char *buf, my_queue *queue, int *flag) {
-
-	if (is_digit(str[index])) {
-		char *dig[] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-
-		for (int i = 0; i < sizeof(dig)/sizeof(char*); i++) {
-
-			if (str[index] == dig[i][0]) {
-
-				if (!(*flag)) {
-
-					if(!(buf = (char*)malloc(sizeof(char) * BUFFER_SIZE))) {
-						printf("[error]");
-
-						return -1;
-					}
-
-					*flag = 1;
-					snprintf(buf, BUFFER_SIZE, "%s", dig[i]);
-
-					return 0;
-				}
-				else {
-					cat_str(buf, dig[i]);
-
-					return 0;
-				}
-			}
-			else {
-				continue;
-			}
-		}
-	}
-
-	return 0;
-}
 
 
-int pars(char *str, my_queue *queue)
-{
-	int flag = 0;
-	char *buf;
-
-	for (int i = 0; str[i] ; i++) {
-		if(symbols_pars(str, i, buf, queue, &flag) < 0) {
-			return -1;
-		}
-
-		if(number_pars(str, i, buf, queue, &flag) < 0) {
-			return -1;
-		}		
-	}
-
-	if (flag) {
-		queue->push(buf);
-	}
-
-	return 0;
-}
-*/
 
 int push_number(const char *str, int *index, my_queue *queue) {
 	int start = *index;
@@ -392,106 +246,6 @@ int new_pars(const char *str, my_queue *queue) {
 	return 0;
 }
 
-/*
-int pole_notation(my_queue *in, char ***out) {
-	if(!(*out = (char**)malloc((queue_getsize(in) + 1) * sizeof(char*)))) {
-		printf("[error]");
-
-		return -1;
-	}
-
-	my_stack stack;
-	stack_init(&stack);
-
-	int ptr = 0;
-
-	while(queue_getsize(in)) {
-		char *buffer = NULL;
-
-		if(!queue_pop(in, &buffer)) {
-			printf("[error]");
-			stack_clear(&stack);
-
-			return -1;
-		}
-
-		if(is_digit(buffer[strlen(buffer) - 1])) 	{
-			if(!((*out)[ptr] = (char*)malloc(sizeof(char) * (strlen(buffer) + 1)))) {
-				printf("[error]");
-				stack_clear(&stack);
-
-				return -1;
-			}
-
-			snprintf((*out)[ptr], strlen(buffer) + 1, "%s", buffer);
-			free(buffer);
-			ptr++;
-
-			continue;
-		}
-
-		if(is_operator(buffer[strlen(buffer) - 1])) {
-
-		}
-
-		if(buffer[strlen(buffer) - 1] == '(') {
-			if(!stack_push(&stack, buffer)) {
-				printf("[error]");
-				stack_clear(&stack);
-
-				return -1;
-			}
-
-			free(buffer);
-
-			continue;
-		}
-
-		if(buffer[strlen(buffer) - 1] == ')') {
-			char *buf = NULL;
-
-			if(stack_pop(&stack, &buf)) {
-				printf("[error]");
-				stack_clear(&stack);
-				free(buffer);
-
-				return -1;
-			}
-
-			while(strcmp(buf, "(")) {
-				if(!((*out)[ptr] = (char*)malloc(sizeof(char) * (strlen(buf) + 1)))) {
-					printf("[error]");
-
-					return -1;
-				}
-
-				snprintf((*out)[ptr], strlen(buf) + 1, "%s", buf);
-				free(buf);
-				ptr++;
-
-				if(stack_pop(&stack, &buf)) {
-					printf("[error]");
-					stack_clear(&stack);
-					free(buffer);
-
-					return -1;
-				}
-			}
-			
-
-			free(buf);
-			free(buffer);
-
-			continue;
-		}
-
-
-
-	}
-
-
-}
-*/
 
 int priority(char first_op, char second_op) {
 	if(!is_operator(first_op) || !is_operator(second_op)) {
@@ -1163,47 +917,6 @@ int sub(char **first_operand, char **second_operand) {
 
 }
 
-/*
-int calculate(char **pole_note, int arr_size) {
-	for(int i = 0; i < arr_size; i++) {
-		switch(pole_note[i][0]) {
-			case '~':
-				if(unary_minus(&pole_note[i-1])) {
-					printf("[error]");
-
-					return -1;
-				}
-
-				free(pole_note[i]);
-				pole_note[i] = pole_note[i-1];
-				break;
-			case '+':
-				if(sum(&pole_note[i-1], &pole_note[i-2])){
-					printf("[error]");
-
-					return -1;
-				}
-printf("here: %s\n", pole_note[i-1]);
-				free(pole_note[i]);
-				pole_note[i] = pole_note[i-1];
-				break;
-			case '-':
-				if(sub(&pole_note[i-2], &pole_note[i-1])){
-					printf("[error]");
-
-					return -1;
-				}
-
-				free(pole_note[i]);
-				pole_note[i] = pole_note[i-1];
-				break;
-		}
-	}
-
-	return 0;
-}
-*/
-
 int mul(char **first_operand, char **second_operand) {
 	if(!(*first_operand) || !(*second_operand)) {
 		return -1;
@@ -1348,6 +1061,7 @@ int mul(char **first_operand, char **second_operand) {
 	}
 
 	free(*first_operand);
+	*first_operand = NULL;
 
 	if(!(*first_operand = (char *)malloc(sizeof(char) * (strlen(first_op->data) + 1)))) {
 		queue_clear(&list);
@@ -1358,7 +1072,228 @@ int mul(char **first_operand, char **second_operand) {
 	snprintf(*first_operand, strlen(first_op->data) + 1, "%s", first_op->data);
 	queue_clear(&list);
 
+	if(reverse(*second_operand)) {
+		return -1;
+	}
+
 	return 0;
+}
+
+int division(char **first_operand, char **second_operand) {
+
+	if((*second_operand)[0] == 0) {
+		return -1;
+	}
+
+	switch(compare(*first_operand, *second_operand)) {
+		case -1:
+			free(*first_operand);
+			*first_operand = NULL;
+
+			if(!(*first_operand = (char *)malloc(sizeof(char) * 2))) {
+				return -1;
+			}
+
+			snprintf(*first_operand, 2, "0");
+
+			return 0;
+		case 0:
+			free(*first_operand);
+			*first_operand = NULL;
+
+			if(!(*first_operand = (char *)malloc(sizeof(char) * 2))) {
+				return -1;
+			}
+
+			snprintf(*first_operand, 2, "1");
+
+			return 0;
+	}
+
+	char *dividend = NULL;
+	char *divider = NULL;
+
+	if(!(dividend = (char *)malloc(sizeof(char) * (strlen(*first_operand) + 1)))) {
+		return -1;
+	}
+
+	if(!(divider = (char *)malloc(sizeof(char) * (strlen(*second_operand) + 1)))) {
+		free(dividend);
+
+		return -1;
+	}
+
+	dividend[0] = '\0';
+	snprintf(divider, strlen(*second_operand) + 1, "%s", *second_operand);
+
+	char *result = NULL;
+
+	if(!(result = (char *)malloc(sizeof(char) * (strlen(*first_operand) + 1)))) {
+		free(divider);
+		free(dividend);
+
+		return -1;
+	}
+
+	int result_index = 0;
+	int index = 0;
+
+	while(index != strlen(*first_operand)) {
+		int str_end = strlen(dividend);
+		int cur_index = 0;
+
+		while(((compare(dividend, divider) < 0) && (index != strlen(*first_operand)))/* && (index != strlen(divider))*/) {			
+			dividend[cur_index + str_end] = (*first_operand)[index];
+			dividend[cur_index + str_end + 1] = '\0';
+printf("dividend:%s index:%d first:%c\n", dividend, index, (*first_operand)[index]);
+			index++;
+			cur_index++;			
+		}
+printf("dividend_s:%s divider_s:%s\n", dividend, divider);
+		char *backup = NULL;
+
+		if(!(backup = (char *)malloc(sizeof(char) * (strlen(dividend) + 1)))) {
+			free(divider);
+			free(dividend);
+			free(result);
+
+			return -1;
+		}
+
+		snprintf(backup, strlen(dividend) + 1, "%s", dividend);
+
+		for(int i = 0; i < 10; i++) {
+			char *cur_i = NULL;
+
+			if(!(cur_i = (char *)malloc(sizeof(char) * 2))) {
+				free(divider);
+				free(dividend);
+				free(result);
+				free(backup);
+
+				return -1;
+			}
+
+			snprintf(cur_i, 2, "%d", i);
+
+			if(mul(&cur_i, &divider)) {
+				free(divider);
+				free(dividend);
+				free(cur_i);
+				free(result);
+				free(backup);
+
+				return -1;
+			}
+printf("dividend:%s divider:%s cur_i:%s\n", dividend, divider, cur_i);
+			if(sub(&dividend, &cur_i)) {
+				free(divider);
+				free(dividend);
+				free(cur_i);
+				free(result);
+				free(backup);
+
+				return -1;
+			}
+printf("ostatok:%s\n", dividend);
+			if(dividend[0] == '0') {
+				result[result_index] = convert_to_char(i);
+				result_index++;
+				free(cur_i);
+				free(dividend);
+
+				if(!(dividend = (char *)malloc(sizeof(char) * (strlen(*first_operand) + 1)))) {
+					free(divider);
+					free(result);
+					free(backup);
+
+					return -1;
+				}
+
+				dividend[0] = '\0';
+
+				break;
+			}
+
+			if(dividend[0] == '-') {
+				result[result_index] = convert_to_char(i - 1);
+				result_index++;
+				free(cur_i);
+				free(dividend);
+
+				if(!(dividend = (char *)malloc(sizeof(char) * (strlen(*first_operand) + 1)))) {
+					free(divider);
+					free(result);
+					free(backup);
+
+					return -1;
+				}
+
+				snprintf(dividend, strlen(*first_operand) + 1, "%s", backup);
+
+				if(!(cur_i = (char *)malloc(sizeof(char) * 2))) {
+					free(divider);
+					free(dividend);
+					free(backup);
+					free(result);
+
+					return -1;
+				}
+
+
+				snprintf(cur_i, 2, "%d", --i);
+
+				if(mul(&cur_i, &divider)) {
+					free(divider);
+					free(dividend);
+					free(backup);
+					free(result);
+					free(cur_i);
+
+					return -1;
+				}
+
+				if(sub(&dividend, &cur_i)) {
+					free(divider);
+					free(dividend);
+					free(backup);
+					free(result);
+					free(cur_i);
+
+					return -1;
+				}
+
+				free(cur_i);
+
+				break;
+			}
+
+			free(dividend);
+
+			if(!(dividend = (char *)malloc(sizeof(char) * (strlen(*first_operand) + 1)))) {
+				free(divider);
+				free(dividend);
+				free(backup);
+				free(result);
+				free(cur_i);
+
+				return -1;
+			}
+
+			snprintf(dividend, strlen(*first_operand) + 1, "%s", backup);
+			free(cur_i);
+		}
+		free(backup);
+	}
+
+	result[result_index] = '\0';
+	free(*first_operand);
+	*first_operand = result;
+
+	free(dividend);
+	free(divider);
+
+	return 0;	
 }
 
 int calculate(my_queue *pole_note) {
@@ -1419,7 +1354,7 @@ int calculate(my_queue *pole_note) {
 
 					return -1;
 				}
-
+printf("Here\n");
 				if(sub(&(first_operand->data), &(second_operand->data))){
 					printf("[error]");
 
@@ -1447,7 +1382,25 @@ int calculate(my_queue *pole_note) {
 				queue_remove(pole_note, index--);
 
 				break;
+			case '/':
+				if(queue_get(pole_note, index-2, &first_operand) || queue_get(pole_note, index-1, &second_operand)) {
+					printf("[error]");
+
+					return -1;
+				}
+
+				if(division(&(first_operand->data), &(second_operand->data))){
+					printf("[error]");
+
+					return -1;
+				}
+
+				queue_remove(pole_note, index--);
+				queue_remove(pole_note, index--);
+
+				break;
 		}
+
 		index++;
 	}
 

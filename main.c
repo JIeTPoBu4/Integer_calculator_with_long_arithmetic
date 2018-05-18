@@ -33,7 +33,6 @@ int main() {
 		printf("%s\n", pole_arr[i]);
 	}
 	*/
-
 	calculate(&pole_note);
 	char *buff = NULL;
 	queue_get_last(&pole_note, &buff);
