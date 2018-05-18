@@ -1229,7 +1229,7 @@ printf("ostatok:%s\n", dividend);
 					return -1;
 				}
 
-				snprintf(dividend, strlen(*first_operand) + 1, "%s", backup);
+				//snprintf(dividend, strlen(*first_operand) + 1, "%s", backup);
 
 				if(!(cur_i = (char *)malloc(sizeof(char) * 2))) {
 					free(divider);
@@ -1253,7 +1253,7 @@ printf("ostatok:%s\n", dividend);
 					return -1;
 				}
 
-				if(sub(&dividend, &cur_i)) {
+				if(sub(&backup, &cur_i)) {
 					free(divider);
 					free(dividend);
 					free(backup);
@@ -1263,6 +1263,7 @@ printf("ostatok:%s\n", dividend);
 					return -1;
 				}
 
+				snprintf(dividend, strlen(*first_operand) + 1, "%s", backup);
 				free(cur_i);
 
 				break;
