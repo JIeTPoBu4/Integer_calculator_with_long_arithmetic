@@ -1175,6 +1175,11 @@ int division(char **first_operand, char **second_operand) {
 			dividend[cur_index + str_end + 1] = '\0';
 printf("dividend:%s index:%d first:%c\n", dividend, index, (*first_operand)[index]);
 			index++;
+
+			if(dividend[0] == '0') {
+				break;
+			}
+
 			cur_index++;			
 		}
 printf("dividend_s:%s divider_s:%s\n", dividend, divider);
@@ -1190,10 +1195,10 @@ printf("dividend_s:%s divider_s:%s\n", dividend, divider);
 
 		snprintf(backup, strlen(dividend) + 1, "%s", dividend);
 
-		for(int i = 0; i < 10; i++) {
+		for(int i = 0; i <= 10; i++) {
 			char *cur_i = NULL;
 
-			if(!(cur_i = (char *)malloc(sizeof(char) * 2))) {
+			if(!(cur_i = (char *)malloc(sizeof(char) * 3))) {
 				free(divider);
 				free(dividend);
 				free(result);
@@ -1202,7 +1207,7 @@ printf("dividend_s:%s divider_s:%s\n", dividend, divider);
 				return -1;
 			}
 
-			snprintf(cur_i, 2, "%d", i);
+			snprintf(cur_i, 3, "%d", i);
 
 			if(mul(&cur_i, &divider)) {
 				free(divider);
@@ -1259,7 +1264,7 @@ printf("ostatok:%s\n", dividend);
 
 				//snprintf(dividend, strlen(*first_operand) + 1, "%s", backup);
 
-				if(!(cur_i = (char *)malloc(sizeof(char) * 2))) {
+				if(!(cur_i = (char *)malloc(sizeof(char) * 3))) {
 					free(divider);
 					free(dividend);
 					free(backup);
@@ -1389,7 +1394,7 @@ int calculate(my_queue *pole_note) {
 
 					return -1;
 				}
-printf("Here\n");
+
 				if(sub(&(first_operand->data), &(second_operand->data))){
 					printf("[error]");
 
