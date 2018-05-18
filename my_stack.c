@@ -11,14 +11,11 @@ int stack_push(my_stack *stack, const char *string) {
   node *temp = NULL;
 
   if(!(temp = (node*)malloc(sizeof(node)))) {
-    printf("[error]");
-
     return -1;
   }
 
   if(!(temp->data = (char*)malloc(sizeof(char) * (strlen(string) + 1)))) {
     free(temp);
-    printf("[error]");
 
     return -1;
   }
@@ -33,15 +30,12 @@ int stack_push(my_stack *stack, const char *string) {
 
 int stack_pop(my_stack *stack, char **string) {
   if (!(stack->head)) {
-    printf("[error]");
     string = NULL;
 
     return -1;
   }
 
   if (!(*string = (char *)malloc(sizeof(char) * (strlen(stack->head->data) + 1)))) {
-    printf("[error]");
-
     return 1;
   }
 
@@ -73,14 +67,10 @@ int stack_getsize(const my_stack *stack) { return stack->size; }
 
 int stack_get_last(my_stack *stack, char **buf) {
   if(!(stack->head->data)) {
-    printf("[error]");
-
     return -1;
   }
 
   if(!(*buf = (char*)malloc(sizeof(char) * (strlen(stack->head->data) + 1)))) {
-    printf("[error]");
-
     return -1;
   }
 
@@ -91,8 +81,6 @@ int stack_get_last(my_stack *stack, char **buf) {
 
 int stack_delete_last(my_stack *stack) {
    if (!(stack->head)) {
-    printf("[error]");
-
     return -1;
   }
 

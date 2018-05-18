@@ -11,13 +11,10 @@ int queue_init(my_queue *queue) {
 int queue_push(my_queue *queue, const char *string) {
   if (!(queue->head)) {
     if (!(queue->head = (node *)malloc(sizeof(node)))) {
-      perror("[error]");
-
       return -1;
     }
 
     if (!(queue->head->data = (char *)malloc(sizeof(char) * (strlen(string) + 1)))) {
-      perror("[error]");
       free(queue->head);
       queue->head = NULL;
 
@@ -34,13 +31,10 @@ int queue_push(my_queue *queue, const char *string) {
 
   if (queue->head == queue->tail) {
     if (!(queue->tail = (node *)malloc(sizeof(node)))) {
-      perror("[error]");
-
       return -1;
     }
 
     if (!(queue->tail->data = (char *)malloc(sizeof(char) * (strlen(string) + 1)))) {
-      perror("[error]");
       free(queue->tail);
       queue->tail = queue->head;
 
@@ -58,13 +52,10 @@ int queue_push(my_queue *queue, const char *string) {
   node *temp = NULL;
 
   if (!(temp = (node *)malloc(sizeof(node)))) {
-    perror("[error]");
-
     return -1;
   }
 
   if (!(temp->data = (char *)malloc(sizeof(char) * (strlen(string) + 1)))) {
-    perror("[error]");
     free(temp);
 
     return -1;
@@ -81,15 +72,12 @@ int queue_push(my_queue *queue, const char *string) {
 
 int queue_pop(my_queue *queue, char **string) {
   if (!(queue->head)) {
-    perror("[error]");
     string = NULL;
 
     return -1;
   }
 
   if (!(*string = (char *)malloc(sizeof(char) * (strlen(queue->head->data) + 1)))) {
-    perror("[error]");
-
     return 1;
   }
 
@@ -127,14 +115,10 @@ int queue_getsize(const my_queue *queue) { return queue->size; }
 
 int queue_get_last(my_queue *queue, char **buf) {
   if(!(queue->tail->data)) {
-    printf("[error]");
-
     return -1;
   }
 
   if(!(*buf = (char*)malloc(sizeof(char) * (strlen(queue->tail->data) + 1)))) {
-    printf("[error]");
-
     return -1;
   }
 
