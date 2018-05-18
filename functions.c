@@ -249,19 +249,21 @@ int priority(char first_op, char second_op) {
 		return -1;
 	}
 
-	if(first_op == '+' || first_op == '-') {
+	if(first_op == '+' || first_op == '-' || first_op == '~') {
 		return 0;
 	}
 	else{
 		switch(second_op) {
 			case '+':
-		return 1;
+				return 1;
 			case '-':
-		return 1;
+				return 1;
+			case '~':
+				return 1;
 			case '*':
-		return 0;
+				return 0;
 			case '/':
-		return 0;
+				return 0;
 		}
 	}
 
