@@ -1085,6 +1085,28 @@ int division(char **first_operand, char **second_operand) {
 		return -1;
 	}
 
+	int minus_flag = 0;
+
+	if(((*first_operand)[0] == '-') && (*second_operand)[0] == '-') {
+		if(unary_minus(first_operand) || unary_minus(second_operand)) {
+			return -1;
+		}
+	}
+	else if((*first_operand)[0] == '-') {
+		minus_flag = 1;
+
+		if(unary_minus(first_operand)) {
+			return -1;
+		}
+	}
+	else if((*second_operand)[0] == '-') {
+		minus_flag = 1;
+
+		if(unary_minus(second_operand)) {
+			return -1;
+		}
+	}
+
 	switch(compare(*first_operand, *second_operand)) {
 		case -1:
 			free(*first_operand);
@@ -1106,6 +1128,12 @@ int division(char **first_operand, char **second_operand) {
 			}
 
 			snprintf(*first_operand, 2, "1");
+
+			if(minus_flag) {
+				if(unary_minus(first_operand)) {
+					return -1;
+				}
+			}
 
 			return 0;
 	}
@@ -1293,6 +1321,12 @@ printf("ostatok:%s\n", dividend);
 
 	free(dividend);
 	free(divider);
+
+	if(minus_flag) {
+		if(unary_minus(first_operand)) {
+			return -1;
+		}
+	}
 
 	return 0;	
 }
