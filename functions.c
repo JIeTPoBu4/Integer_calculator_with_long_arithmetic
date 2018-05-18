@@ -877,12 +877,8 @@ int sub(char **first_operand, char **second_operand) {
 
 }
 
-int mul(char **first_operand, char **second_operand) {
-	if(!(*first_operand) || !(*second_operand)) {
-		return -1;
-	}
-
-	int minus_flag = 0;
+int sign_calc(char **first_operand, char **second_operand, int *minus_flag) {
+	*minus_flag = 0;
 
 	if(((*first_operand)[0] == '-') && (*second_operand)[0] == '-') {
 		if(unary_minus(first_operand) || unary_minus(second_operand)) {
@@ -890,24 +886,24 @@ int mul(char **first_operand, char **second_operand) {
 		}
 	}
 	else if((*first_operand)[0] == '-') {
-		minus_flag = 1;
+		*minus_flag = 1;
 
 		if(unary_minus(first_operand)) {
 			return -1;
 		}
 	}
 	else if((*second_operand)[0] == '-') {
-		minus_flag = 1;
+		*minus_flag = 1;
 
 		if(unary_minus(second_operand)) {
 			return -1;
 		}
 	}
 
-	if(reverse(*first_operand) || reverse(*second_operand)) {
-		return -1;
-	}
+	return 0;
+}
 
+int add_mul(char **first_operand, char **second_operand) {
 	int result_size = 0;
 
 	switch(compare(*first_operand, (*second_operand))) {
@@ -1012,14 +1008,6 @@ int mul(char **first_operand, char **second_operand) {
 		return -1;
 	}
 
-	if(minus_flag) {
-		if(unary_minus(&(first_op->data))) {
-			queue_clear(&list);
-
-			return -1;
-		}
-	}
-
 	free(*first_operand);
 	*first_operand = NULL;
 
@@ -1032,6 +1020,35 @@ int mul(char **first_operand, char **second_operand) {
 	snprintf(*first_operand, strlen(first_op->data) + 1, "%s", first_op->data);
 	queue_clear(&list);
 
+	return 0;
+}
+
+int mul(char **first_operand, char **second_operand) {
+	if(!(*first_operand) || !(*second_operand)) {
+		return -1;
+	}
+
+	int minus_flag = 0;
+
+	if(sign_calc(first_operand, second_operand, &minus_flag)) {
+		return -1;
+	}
+
+	if(reverse(*first_operand) || reverse(*second_operand)) {
+		return -1;
+	}
+
+	if(add_mul(first_operand, second_operand)) {
+		return -1;
+	}
+
+	if(minus_flag) {
+		if(unary_minus(first_operand)) {
+			return -1;
+		}
+	}
+
+
 	if(reverse(*second_operand)) {
 		return -1;
 	}
@@ -1039,65 +1056,7 @@ int mul(char **first_operand, char **second_operand) {
 	return 0;
 }
 
-int division(char **first_operand, char **second_operand) {
-
-	if((*second_operand)[0] == 0) {
-		return -1;
-	}
-
-	int minus_flag = 0;
-
-	if(((*first_operand)[0] == '-') && (*second_operand)[0] == '-') {
-		if(unary_minus(first_operand) || unary_minus(second_operand)) {
-			return -1;
-		}
-	}
-	else if((*first_operand)[0] == '-') {
-		minus_flag = 1;
-
-		if(unary_minus(first_operand)) {
-			return -1;
-		}
-	}
-	else if((*second_operand)[0] == '-') {
-		minus_flag = 1;
-
-		if(unary_minus(second_operand)) {
-			return -1;
-		}
-	}
-
-	switch(compare(*first_operand, *second_operand)) {
-		case -1:
-			free(*first_operand);
-			*first_operand = NULL;
-
-			if(!(*first_operand = (char *)malloc(sizeof(char) * 2))) {
-				return -1;
-			}
-
-			snprintf(*first_operand, 2, "0");
-
-			return 0;
-		case 0:
-			free(*first_operand);
-			*first_operand = NULL;
-
-			if(!(*first_operand = (char *)malloc(sizeof(char) * 2))) {
-				return -1;
-			}
-
-			snprintf(*first_operand, 2, "1");
-
-			if(minus_flag) {
-				if(unary_minus(first_operand)) {
-					return -1;
-				}
-			}
-
-			return 0;
-	}
-
+int add_division(char **first_operand, char **second_operand) {
 	char *dividend = NULL;
 	char *divider = NULL;
 
@@ -1284,11 +1243,61 @@ int division(char **first_operand, char **second_operand) {
 	free(dividend);
 	free(divider);
 
+	return 0;
+}
+
+int division(char **first_operand, char **second_operand) {
+
+	if((*second_operand)[0] == '0') {
+		return -1;
+	}
+
+	int minus_flag = 0;
+
+	if(sign_calc(first_operand, second_operand, &minus_flag)) {
+		return -1;
+	}
+
+	switch(compare(*first_operand, *second_operand)) {
+		case -1:
+			free(*first_operand);
+			*first_operand = NULL;
+
+			if(!(*first_operand = (char *)malloc(sizeof(char) * 2))) {
+				return -1;
+			}
+
+			snprintf(*first_operand, 2, "0");
+
+			return 0;
+		case 0:
+			free(*first_operand);
+			*first_operand = NULL;
+
+			if(!(*first_operand = (char *)malloc(sizeof(char) * 2))) {
+				return -1;
+			}
+
+			snprintf(*first_operand, 2, "1");
+
+			if(minus_flag) {
+				if(unary_minus(first_operand)) {
+					return -1;
+				}
+			}
+
+			return 0;
+	}
+
+	if(add_division(first_operand, second_operand)) {
+		return -1;
+	}
+
 	if(minus_flag) {
 		if(unary_minus(first_operand)) {
 			return -1;
 		}
-	}
+	}	
 
 	return 0;	
 }

@@ -23,8 +23,11 @@ int sub(char **first_operand, char **second_operand);
 int add_sub(char *first_operand, char *second_operand);
 int compare(char *first_operand, char *second_operand);
 int delete_zeros(char **number);
+int sign_calc(char **first_operand, char **second_operand, int *minus_flag);
 int mul(char **first_operand, char **second_operand);
+int add_mul(char **first_operand, char **second_operand);
 int division(char **first_operand, char **second_operand);
+int add_division(char **first_operand, char **second_operand);
 
 
 #endif
