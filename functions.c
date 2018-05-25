@@ -1,14 +1,34 @@
 #include "functions.h"
 #include "node.h"
 
-#define BUFFER_SIZE 16
+#define BUFFER_SIZE 256
 #define OP_BUFFER_SIZE 2
+#define DIGIT_DIAP 10	
+#define START_ASCII_DIGIT 48
+#define STOP_ASCII_DIGIT 57
 
 int is_digit(char symb) {
-	char dig[] = { "0123456789" };
 
-	for(int i = 0; dig[i]; i++) {
-		if(dig[i] == symb)
+	switch(symb) {
+		case '0':
+			return 1;
+		case '1':
+			return 1;
+		case '2':
+			return 1;
+		case '3':
+			return 1;
+		case '4':
+			return 1;
+		case '5':
+			return 1;
+		case '6':
+			return 1;
+		case '7':
+			return 1;
+		case '8':
+			return 1;
+		case '9':
 			return 1;
 	}
 
@@ -45,7 +65,7 @@ int push_number(const char *str, int *index, my_queue *queue) {
 	char *buffer = NULL;
 	end = ptr;
 
-	if(!(buffer = (char*)malloc(sizeof(char) * (end - start + 1)))) {
+	if(!(buffer = (char *)malloc(sizeof(char) * (end - start + 1)))) {
 		return -1;
 	}
 
@@ -149,7 +169,7 @@ int pars(const char *str, my_queue *queue) {
 
 		if(is_digit(str[i])) {
 			if(push_number(str, &i, queue)) {
-				perror("[error]");
+				printf("[error]");
 
 				return -1;
 			}
@@ -168,7 +188,7 @@ int pars(const char *str, my_queue *queue) {
 			}
 
 			if(push_operator(str[i], queue) < 0) {
-				perror("[error]");
+				printf("[error]");
 
 				return -1;
 			}
@@ -180,7 +200,7 @@ int pars(const char *str, my_queue *queue) {
 
 			if(str[i] == '-' && !queue_getsize(queue)) {
 				if(push_operator('~', queue) < 0) {			//~ is unary minus
-					perror("[error]");
+					printf("[error]");
 
 					return -1;
 				}
@@ -196,7 +216,7 @@ int pars(const char *str, my_queue *queue) {
 
 			if(str[i] == '-' && tmp[strlen(tmp) - 1] == '(') {
 				if(push_operator('~', queue) < 0) {
-					perror("[error]");
+					printf("[error]");
 
 					return -1;
 				}
@@ -208,7 +228,7 @@ int pars(const char *str, my_queue *queue) {
 
 			if(is_digit(tmp[strlen(tmp) - 1]) || tmp[strlen(tmp) - 1] == ')') {
 				if(push_operator(str[i], queue) < 0) {
-					perror("[error]");
+					printf("[error]");
 					free(tmp);
 
 					return -1;
@@ -220,7 +240,7 @@ int pars(const char *str, my_queue *queue) {
 			}
 
 			if(is_operator(tmp[strlen(tmp) - 1])) {
-				perror("[error]");
+				printf("[error]");
 				free(tmp);
 
 				return -1;
@@ -229,13 +249,13 @@ int pars(const char *str, my_queue *queue) {
 			return -1;
 		}
 
-		perror("[error]");
+		printf("[error]");
 
 		return -1;
 	}
 
 	if(open_scope_num - close_scope_num) {
-		perror("[error]");
+		printf("[error]");
 
 		return -1;
 	}
@@ -352,7 +372,7 @@ int pole_notation(my_queue *in, my_queue *out) {
 		char *buffer = NULL;
 
 		if(queue_pop(in, &buffer)) {
-			perror("[error]");
+			printf("[error]");
 			stack_clear(&stack);
 
 			return -1;
@@ -360,7 +380,7 @@ int pole_notation(my_queue *in, my_queue *out) {
 
 		if(is_digit(buffer[0])) {
 			if(queue_push(out, buffer)) {
-				perror("[error]");
+				printf("[error]");
 				free(buffer);
 				stack_clear(&stack);
 
@@ -369,7 +389,7 @@ int pole_notation(my_queue *in, my_queue *out) {
 		}
 		else if(is_operator(buffer[0])) {
 			if(calc_operator(out, &stack, buffer)) {
-				perror("[error]");
+				printf("[error]");
 				free(buffer);
 				stack_clear(&stack);
 
@@ -380,7 +400,7 @@ int pole_notation(my_queue *in, my_queue *out) {
 			switch(buffer[0]) {
 				case '(':
 					if(stack_push(&stack, buffer)) {
-						perror("[error]");
+						printf("[error]");
 						free(buffer);
 						stack_clear(&stack);
 
@@ -390,7 +410,7 @@ int pole_notation(my_queue *in, my_queue *out) {
 					break;
 				case ')':
 					if(calc_scope(out, &stack)) {
-						perror("[error]");
+						printf("[error]");
 						free(buffer);
 						stack_clear(&stack);
 
@@ -401,7 +421,7 @@ int pole_notation(my_queue *in, my_queue *out) {
 			}
 		}
 		else {
-			perror("[error]");
+			printf("[error]");
 			free(buffer);
 			stack_clear(&stack);
 
@@ -415,14 +435,14 @@ int pole_notation(my_queue *in, my_queue *out) {
 		char *buffer = NULL;
 
 		if(stack_pop(&stack, &buffer)) {
-			perror("[error]");
+			printf("[error]");
 			stack_clear(&stack);
 
 			return -1;
 		}
 
 		if(queue_push(out, buffer)) {
-			perror("[error]");
+			printf("[error]");
 			free(buffer);
 			stack_clear(&stack);
 
@@ -440,7 +460,11 @@ int reverse(char *string) {
 		return -1;
 	}
 
-	char buffer[strlen(string) + 1];
+	char *buffer = NULL;
+
+	if(!(buffer = (char *)malloc(sizeof(char) * (strlen(string) + 1)))) {
+		return -1;
+	}
 
 	int str_index = strlen(string) - 1;
 	int buf_index = 0;
@@ -457,6 +481,8 @@ int reverse(char *string) {
 	for(int i = 0; i < strlen(string); i++) {
 		string[i] = buffer[i];
 	}
+
+	free(buffer);
 
 	return 0;
 }
@@ -517,57 +543,24 @@ int delete_zeros(char **number) {
 }
 
 int convert_to_digit(char symb) {
-	switch(symb) {
-		case '0':
-			return 0;
-		case '1':
-			return 1;
-		case '2':
-			return 2;
-		case '3':
-			return 3;
-		case '4':
-			return 4;
-		case '5':
-			return 5;
-		case '6':
-			return 6;
-		case '7':
-			return 7;
-		case '8':
-			return 8;
-		case '9':
-			return 9;
-		default:
-			return -1;
+	int digit = 0;
+
+	if((symb >= START_ASCII_DIGIT) && (symb <= STOP_ASCII_DIGIT)) {
+		digit += symb - '0';
 	}
+
+	return digit;
 }
 
 char convert_to_char(int digit) {
-	switch(digit) {
-		case 0:
-			return '0';
-		case 1:
-			return '1';
-		case 2:
-			return '2';
-		case 3:
-			return '3';
-		case 4:
-			return '4';
-		case 5:
-			return '5';
-		case 6:
-			return '6';
-		case 7:
-			return '7';
-		case 8:
-			return '8';
-		case 9:
-			return '9';
-		default:
-			return '\0';
+
+	char symb = '\0';
+
+	if((digit >= 0) && (digit <= (DIGIT_DIAP - 1))) {
+		symb = (char)(48 + digit);
 	}
+
+	return symb;
 }
 
 int unary_minus(char **first_operand) {
@@ -761,7 +754,7 @@ int add_sub(char *first_operand, char *second_operand) {
 				first_operand[i+1] = convert_to_char(digit);
 			}
 			else {
-				for(int j = i + 1; j < strlen(first_operand); j++) {
+				for(unsigned j = i + 1; j < strlen(first_operand); j++) {
 					int digit = convert_to_digit(first_operand[j]);
 
 					if(digit == 0) {
@@ -1115,7 +1108,7 @@ int add_division(char **first_operand, char **second_operand) {
 
 		snprintf(backup, strlen(dividend) + 1, "%s", dividend);
 
-		for(int i = 0; i <= 10; i++) {
+		for(int i = 0; i <= DIGIT_DIAP; i++) {
 			char *cur_i = NULL;
 
 			if(!(cur_i = (char *)malloc(sizeof(char) * 3))) {
@@ -1311,7 +1304,7 @@ int calculate(my_queue *pole_note) {
 		node *current_node = NULL;
 
 		if(queue_get(pole_note, index, &current_node)) {
-			perror("[error]");
+			printf("[error]");
 
 			return -1;
 		}
@@ -1323,13 +1316,13 @@ int calculate(my_queue *pole_note) {
 			case '~':
 
 				if(queue_get(pole_note, index-1, &first_operand)) {
-					perror("[error]");
+					printf("[error]");
 
 					return -1;
 				}
 
 				if(unary_minus(&(first_operand->data))) {
-					perror("[error]");
+					printf("[error]");
 
 					return -1;
 				}
@@ -1340,13 +1333,13 @@ int calculate(my_queue *pole_note) {
 			case '+':
 
 				if(queue_get(pole_note, index-2, &first_operand) || queue_get(pole_note, index-1, &second_operand)) {
-					perror("[error]");
+					printf("[error]");
 
 					return -1;
 				}
 
 				if(sum(&(first_operand->data), &(second_operand->data))){
-					perror("[error]");
+					printf("[error]");
 
 					return -1;
 				}
@@ -1358,13 +1351,13 @@ int calculate(my_queue *pole_note) {
 			case '-':
 
 				if(queue_get(pole_note, index-2, &first_operand) || queue_get(pole_note, index-1, &second_operand)) {
-					perror("[error]");
+					printf("[error]");
 
 					return -1;
 				}
 
 				if(sub(&(first_operand->data), &(second_operand->data))){
-					perror("[error]");
+					printf("[error]");
 
 					return -1;
 				}
@@ -1375,13 +1368,13 @@ int calculate(my_queue *pole_note) {
 				break;
 			case '*':
 				if(queue_get(pole_note, index-2, &first_operand) || queue_get(pole_note, index-1, &second_operand)) {
-					perror("[error]");
+					printf("[error]");
 
 					return -1;
 				}
 
 				if(mul(&(first_operand->data), &(second_operand->data))){
-					perror("[error]");
+					printf("[error]");
 
 					return -1;
 				}
@@ -1392,13 +1385,13 @@ int calculate(my_queue *pole_note) {
 				break;
 			case '/':
 				if(queue_get(pole_note, index-2, &first_operand) || queue_get(pole_note, index-1, &second_operand)) {
-					perror("[error]");
+					printf("[error]");
 
 					return -1;
 				}
 
 				if(division(&(first_operand->data), &(second_operand->data))){
-					perror("[error]");
+					printf("[error]");
 
 					return -1;
 				}
@@ -1411,6 +1404,64 @@ int calculate(my_queue *pole_note) {
 
 		index++;
 	}
+
+	return 0;
+}
+
+
+int input(char **buffer) {
+	*buffer = NULL;
+	char *add_buf = NULL;
+
+	if(!(*buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE))) {
+		printf("[error]");
+
+		return -1;
+	}
+
+	(*buffer)[0] = '\0';
+
+	if(!(add_buf = (char *)malloc(sizeof(char) * BUFFER_SIZE))) {
+		free(*buffer);
+		printf("[error]");
+
+		return -1;
+	}
+
+	while(fgets(add_buf, BUFFER_SIZE, stdin)) {
+
+		if(add_buf[strlen(add_buf) - 1] == '\n') {
+			add_buf[strlen(add_buf) - 1] = '\0';
+		}
+
+		char *temp = NULL;
+
+		if(!(temp = (char *)malloc(sizeof(char) * (strlen(*buffer) + 1)))) {
+			free(add_buf);
+			free(*buffer);
+			*buffer = NULL;
+			printf("[error]");
+
+			return -1;
+		}
+
+		snprintf(temp, strlen(*buffer) + 1, "%s", *buffer);
+		free(*buffer);
+
+		if(!(*buffer = (char *)malloc(sizeof(char) * (strlen(add_buf) + strlen(temp) + 1)))) {
+			free(add_buf);
+			free(temp);
+			*buffer = NULL;
+			printf("[error]");
+
+			return -1;
+		}	
+
+		snprintf(*buffer, strlen(add_buf) + strlen(temp) + 1, "%s%s", temp, add_buf);
+		free(temp);
+	}
+
+	free(add_buf);
 
 	return 0;
 }

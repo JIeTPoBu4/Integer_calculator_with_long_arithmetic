@@ -12,7 +12,6 @@ int push_negativ_number(const char *str, int *index, my_queue *queue);
 int push_operator(char op, my_queue *queue);
 int pars(const char *str, my_queue *queue);
 int pole_notation(my_queue *in, my_queue *out);
-int queue_to_array(my_queue *queue, char ***array, int *arr_size);
 int reverse(char *string);
 int convert_to_digit(char symb);
 char convert_to_char(int digit);
@@ -28,6 +27,6 @@ int mul(char **first_operand, char **second_operand);
 int add_mul(char **first_operand, char **second_operand);
 int division(char **first_operand, char **second_operand);
 int add_division(char **first_operand, char **second_operand);
-
+int input(char **buffer);
 
 #endif

@@ -1,16 +1,12 @@
 #include "functions.h"
 
-#define BUFFER_SIZE 256
-
 int main() {
-	char buf[BUFFER_SIZE];
+	char *buf = NULL;
 
-	fgets(buf, BUFFER_SIZE, stdin);
-
-	if(buf[strlen(buf) - 1] == '\n') {
-		buf[strlen(buf) - 1] = '\0';
+	if(input(&buf)) {
+		return 0;
 	}
-	
+
 	my_queue queue;
 	my_queue pole_note;
 	queue_init(&queue);
@@ -19,9 +15,12 @@ int main() {
 	if(pars(buf, &queue)) {
 		queue_clear(&queue);
 		queue_clear(&pole_note);
+		free(buf);
 
 		return 0;
 	}
+
+	free(buf);
 
 	if(pole_notation(&queue, &pole_note)) {
 		queue_clear(&queue);

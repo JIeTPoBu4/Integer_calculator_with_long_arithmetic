@@ -146,7 +146,7 @@ int queue_get(my_queue *queue, int index, node **data) {
 }
 
 int queue_remove(my_queue *queue, int index) {
-  if(index >= queue_getsize(queue)) {
+  if((index >= queue_getsize(queue)) || (index < 0)) {
     return -1;
   }
 
